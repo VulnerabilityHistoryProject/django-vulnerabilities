@@ -1,3 +1,5 @@
+require 'yaml'
+
 class NewDjangoCVEs
 
   def initialize(security_txt)
@@ -10,13 +12,15 @@ class NewDjangoCVEs
         cve = cve_from_rst(rst_cve)
         puts "#{cve} ..... #{yml_exists?(cve)}"
         unless yml_exists?(cve)
+          skeleton = YAML.load(File.read('skeletons/cve.yml'))
+          skeleton["CVE"] = cve
+          File.open("cves/#{cve}.yml", "w+") do |file|
+            yml_txt = skeleton.to_yaml[4..-1] # strip off ---\n
+            file.write(yml_txt)
+          end
         end
       end
     end
-  end
-
-  def new_cve(cve_yml)
-
   end
 
   def yml_exists?(cve)
