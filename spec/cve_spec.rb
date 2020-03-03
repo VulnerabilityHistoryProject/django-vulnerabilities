@@ -12,19 +12,19 @@ describe 'CVE yml file' do
 
       let(:vuln) { YAML.load(File.open(file)) }
 
-      it('has CVE key')   { expect(vuln).to include('CVE') }
+      it('has all the proper keys key')   { expect(vuln).to include('CVE') }
       it('has fixes key') { expect(vuln).to include('fixes') }
       it('has vccs key')  { expect(vuln).to include('vccs') }
 
       it 'has valid git hashes and commit/note structure in fixes, vccs, and interesting_commits' do
         vuln['fixes'].each do |fix|
-          expect(fix['commit']).to(match(/[0-9a-f]{40}/).or(be_nil))
+          expect(fix['commit']).to(match(/[0-9a-f]{40,}/).or(be_nil))
         end
         vuln['vccs'].each do |fix|
-          expect(fix['commit']).to(match(/[0-9a-f]{40}/).or(be_nil))
+          expect(fix['commit']).to(match(/[0-9a-f]{40,}/).or(be_nil))
         end
         vuln['interesting_commits']['commits'].each do |fix|
-          expect(fix['commit']).to(match(/[0-9a-f]{40}/).or(be_nil))
+          expect(fix['commit']).to(match(/[0-9a-f]{40,}/).or(be_nil))
         end
       end
 
