@@ -1,7 +1,7 @@
 require 'yaml'
 
-# MIGRATION STATUS: Not done.
-# raise 'Migration already performed.' # Don't run this. Kept for posterity
+# MIGRATION STATUS: Done.
+raise 'Migration already performed.' # Don't run this. Kept for posterity
 
 def order_of_keys
   %w(
