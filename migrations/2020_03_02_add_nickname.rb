@@ -1,6 +1,7 @@
 require 'yaml'
 
 # MIGRATION STATUS: Done. No longer need to run this. Kept for posterity
+raise 'Migration already performed.'
 
 Dir['cves/*.yml'].each do |yml_file|
 
