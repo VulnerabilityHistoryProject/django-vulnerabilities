@@ -47,6 +47,12 @@ def order_of_keys
   )
 end
 
+def source_code?(path)
+  return !path.start_with?('docs/') &&
+         !path.end_with?('.txt') &&
+         !path.end_with?('.html')
+end
+
 Dir['cves/*.yml'].each do |yml_file|
     h = YAML.load(File.open(yml_file, 'r').read)
 
@@ -60,13 +66,12 @@ Dir['cves/*.yml'].each do |yml_file|
     end
 
     fix_commits.each do |f|
-      puts "#{yml_file} - #{f}"
+      # puts "#{yml_file} - #{f}"
       Dir.chdir('../archeogit') do
         cmd = "archeogit blame --csv ../django-vulnerabilities/tmp/src #{f}"
         out = `#{cmd}`
         CSV.new(out, headers: true).each do |row|
-          if row['commit'] != row['contributor']
-            puts row.to_h
+          if (row['commit'] != row['contributor']) && source_code?(row['path'])
             h['vccs'] << {
               "commit" => row['contributor'],
               "note" => "This VCC was discovered automatically via archeogit."
