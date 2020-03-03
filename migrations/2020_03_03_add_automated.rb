@@ -47,20 +47,20 @@ def order_of_keys
 end
 
 def updated_yaml_instructions
-  <<-EOS
-  ===YAML Primer===
-  This is a dictionary data structure, akin to JSON.
-  Everything before a colon is a key, and the values here are usually strings
-  For one-line strings, you can just use quotes after the colon
-  For multi-line strings, as we do for our instructions, you put a | and then
-  indent by two spaces
+  <<~EOS
+===YAML Primer===
+This is a dictionary data structure, akin to JSON.
+Everything before a colon is a key, and the values here are usually strings
+For one-line strings, you can just use quotes after the colon
+For multi-line strings, as we do for our instructions, you put a | and then
+indent by two spaces
 
-  For readability, we hard-wrap multi-line strings at 80 characters. This is not absolutely required, but appreciated.
+For readability, we hard-wrap multi-line strings at 80 characters. This is not absolutely required, but appreciated.
   EOS
 end
 
 def discoverable_question
-  instructions = <<-EOS
+  instructions = <<~EOS
 Is it plausible that a fully automated tool could have discovered this? These
 are tools that require little knowledge of the domain, e.g. automatic static
 analysis, compiler warnings, fuzzers.
@@ -81,7 +81,7 @@ The answer field should be boolean. In answer_note, please explain why you come 
 end
 
 def spec_question
-  specification_instructions = <<-EOS
+  specification_instructions = <<~EOS
 Is there mention of a violation of a specification? For example,
 an RFC specification, a protocol specification, or a requirements
 specification.
@@ -103,7 +103,6 @@ Dir['cves/*.yml'].each do |yml_file|
     h['yaml_instructions'] = updated_yaml_instructions
     h['discoverable'] = discoverable_question
     h['specification'] = spec_question
-
     # Reconstruct the hash in the order we specify
     out_h = {}
     order_of_keys.each do |key|
@@ -118,5 +117,7 @@ Dir['cves/*.yml'].each do |yml_file|
         stripped_yml += "#{line.rstrip}\n" # strip trailing whitespace
       end
       file.write(stripped_yml)
+      print '.'
     end
 end
+puts 'Done!'
