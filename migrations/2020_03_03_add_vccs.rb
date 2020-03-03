@@ -60,6 +60,7 @@ Dir['cves/*.yml'].each do |yml_file|
     # Need to have archeogit repo a sibling of this repo's directory
     # You'll need to set up the configuration.json there too.
     h['vccs'] = []
+    vcc_commits = {}
     fix_commits = h['fixes'].inject([]) do |arr, fix|
       arr << fix['commit'] unless fix['commit'].to_s.empty?
       arr
@@ -72,14 +73,17 @@ Dir['cves/*.yml'].each do |yml_file|
         out = `#{cmd}`
         CSV.new(out, headers: true).each do |row|
           if (row['commit'] != row['contributor']) && source_code?(row['path'])
-            h['vccs'] << {
-              "commit" => row['contributor'],
-              "note" => "This VCC was discovered automatically via archeogit."
-            }
+            vcc_commits[row['contributor']] = true # set
           end
 
         end
       end
+    end
+    vcc_commits.keys.each do |vcc|
+      h['vccs'] << {
+        "commit" => vcc,
+        "note" => "This VCC was discovered automatically via archeogit."
+      }
     end
 
     # Reconstruct the hash in the order we specify
