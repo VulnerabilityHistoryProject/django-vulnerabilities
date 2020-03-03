@@ -1,0 +1,97 @@
+require 'yaml'
+require 'csv'
+
+# MIGRATION STATUS: Not done.
+# raise 'Migration already performed.' # Don't run this. Kept for posterity
+
+def order_of_keys
+  %w(
+    CVE
+    yaml_instructions
+    curated_instructions
+    curated
+    reported_instructions
+    reported_date
+    announced_instructions
+    announced_date
+    published_instructions
+    published_date
+    description_instructions
+    description
+    bounty_instructions
+    bounty
+    reviews
+    bugs
+    repo
+    fixes_vcc_instructions
+    fixes
+    vccs
+    upvotes_instructions
+    upvotes
+    unit_tested
+    discovered
+    discoverable
+    specification
+    subsystem
+    interesting_commits
+    i18n
+    sandbox
+    ipc
+    lessons
+    mistakes
+    CWE_instructions
+    CWE
+    CWE_note
+    nickname_instructions
+    nickname
+  )
+end
+
+Dir['cves/*.yml'].each do |yml_file|
+    h = YAML.load(File.open(yml_file, 'r').read)
+
+    # Excavate VCCs using archeogit
+    # Need to have archeogit repo a sibling of this repo's directory
+    # You'll need to set up the configuration.json there too.
+    h['vccs'] = []
+    fix_commits = h['fixes'].inject([]) do |arr, fix|
+      arr << fix['commit'] unless fix['commit'].to_s.empty?
+      arr
+    end
+
+    fix_commits.each do |f|
+      puts "#{yml_file} - #{f}"
+      Dir.chdir('../archeogit') do
+        cmd = "archeogit blame --csv ../django-vulnerabilities/tmp/src #{f}"
+        out = `#{cmd}`
+        CSV.new(out, headers: true).each do |row|
+          if row['commit'] != row['contributor']
+            puts row.to_h
+            h['vccs'] << {
+              "commit" => row['contributor'],
+              "note" => "This VCC was discovered automatically via archeogit."
+            }
+          end
+
+        end
+      end
+    end
+
+    # Reconstruct the hash in the order we specify
+    out_h = {}
+    order_of_keys.each do |key|
+      out_h[key] = h[key]
+    end
+
+    # Generate the new YML, clean it up, write it out.
+    File.open(yml_file, "w+") do |file|
+      yml_txt = out_h.to_yaml[4..-1] # strip off ---\n
+      stripped_yml = ""
+      yml_txt.each_line do |line|
+        stripped_yml += "#{line.rstrip}\n" # strip trailing whitespace
+      end
+      file.write(stripped_yml)
+      print '.'
+    end
+end
+puts 'Done!'
