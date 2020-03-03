@@ -52,14 +52,14 @@ describe 'CVE yml file' do
           end
         end
 
-        it 'have answers discovered and discoverable' do
+        it 'have answers discovered and autodiscoverable' do
           if(vuln['curated'])
             expect(vuln['discovered']['answer'].to_s).not_to be_empty
             expect(vuln['discovered']['automated']).to be(true).or(be(false))
             expect(vuln['discovered']['contest']).to be(true).or(be(false))
             expect(vuln['discovered']['developer']).to be(true).or(be(false))
-            expect(vuln['discoverable']['answer_note'].to_s).not_to be_empty
-            expect(vuln['discoverable']['answer']).to be(true).or(be(false))
+            expect(vuln['autodiscoverable']['answer_note'].to_s).not_to be_empty
+            expect(vuln['autodiscoverable']['answer']).to be(true).or(be(false))
           end
         end
 
