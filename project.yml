@@ -1,5 +1,5 @@
 name: Django
-fullname: Apache Tomcat
+fullname: Django
 subdomain: django
 bg_color: '#20AA76'
 project_url: https://www.djangoproject.com/
