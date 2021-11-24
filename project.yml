@@ -2,6 +2,7 @@ name: Django
 fullname: Django
 subdomain: django
 bg_color: '#20AA76'
+fg_color: '#20AA76'
 project_url: https://www.djangoproject.com/
 description: |
   "Django makes it easier to build better Web apps more quickly and with less code." -https://www.djangoproject.com/
