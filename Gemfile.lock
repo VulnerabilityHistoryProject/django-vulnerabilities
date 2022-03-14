@@ -23,6 +23,7 @@ GEM
 
 PLATFORMS
   x64-mingw32
+  x86_64-darwin-21
 
 DEPENDENCIES
   git
@@ -31,4 +32,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   2.1.4
+   2.3.8
